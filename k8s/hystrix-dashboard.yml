@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hystrix-dashboard-app
+  labels:
+    app: hystrix-dashboard-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hystrix-dashboard-app
+  template:
+    metadata:
+      labels:
+        app: hystrix-dashboard-app
+    spec:
+      containers:
+      - name: hystrix-dashboard-app
+        image: rajkumarp/hystrix-dashboard:0.0.1
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 9295
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: hystrix-dashboard-svc
+spec:
+  selector:
+    app: hystrix-dashboard-app
+  type: NodePort # default will be ClusterIP
+  ports:
+  - name: port-80
+    port: 80
+    targetPort: 9295
+    protocol: TCP
